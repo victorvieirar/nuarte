@@ -1,0 +1,320 @@
+* {
+    font-family: 'Montserrat';
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    position: absolute;
+    top: -100vh;
+    left: 0;
+}
+
+#home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 50px 0 0 0;
+    padding: 230px 0 0 0;
+    min-height: auto;
+    z-index: 5;
+    top: 0;
+    left: 0;
+}
+
+#home div.waves-container {
+    width: 100%;
+    height: 230px;
+    z-index: 3;
+}
+
+#waves {
+    width: 100% !important;
+    z-index: 3;
+}
+
+#welcome {
+    margin: 0 0 -20px 0;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    z-index: 2;
+}
+
+#guitar {
+    margin: 25px 0 0 0;
+    width: 100%;
+    height: auto;
+}
+
+#guitar div hr {
+    border-color: #28B2F0;
+    width: 100%;
+}
+
+#guitar div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    height: auto;
+    width: 100%;
+}
+
+#reserve-button {
+    margin: -155px 0 0 0;
+    z-index: 2;
+}
+
+#how-works {
+    margin: 130px 0 0 0;
+}
+
+#login,
+#register {
+    width: 100%;
+    justify-content: center;
+    background-color: white;
+    z-index: 5;
+}
+
+#login.active,
+#register.active {
+    display: flex;
+}
+
+#login-form,
+#register-form {
+    width: 35%;
+}
+
+#back-home-button {
+    margin: 30px 0 0 0;
+}
+
+/* OBJECTS */
+.form-group {
+    display: flex;
+    flex-direction: column-reverse;
+    margin: -5px 0;
+}
+
+label {
+    position: relative;
+    top: 35;
+    width: fit-content;
+    margin: 0 25px;
+    font-size: 0.9em;
+    padding: 0 5px;
+    cursor: text;
+    transition: 300ms cubic-bezier(.35,.37,.16,.99);
+}
+
+input:focus ~ label  {
+    top: 10px;
+    font-size: 0.85em;
+    color: #28B2F0;
+    background-color: white;
+    transition: 300ms cubic-bezier(.35,.37,.16,.99);
+}
+
+input {
+    width: 100%;
+    height: 50px;
+    padding: 10px 25px;
+    border: 1px solid #A2A2A2;
+    border-radius: 30px;
+    transition: 300ms cubic-bezier(.35,.37,.16,.99);
+}
+
+input:focus {
+    outline: none;
+    border-color: #28B2F0;
+    transition: 300ms cubic-bezier(.35,.37,.16,.99);
+}
+
+button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin: 20px 0 0 0;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 1px;
+    color: white;
+    font-size: 0.9em;
+    border-radius: 60px;
+    border: none;
+    cursor: pointer;
+    transition: 200ms ease-in;
+    background: -webkit-linear-gradient(0deg, #28B2F0 0%,#2CD1ED 33%,#38E7E4 66%,#3DEFE1 100%);
+}
+
+button:hover,
+button:focus {
+    -webkit-box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    -moz-box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    transition: 200ms ease-in; 
+}
+
+button:focus {
+    outline: none;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+
+/* COMMON CLASSES */
+
+.behind {
+    z-index: 1;
+    display: none;
+}
+
+.logo {
+    text-align: center;
+    font-size: 3.5em;
+    letter-spacing: -5px;
+    z-index: 2;
+    background: -webkit-linear-gradient(0deg, #28B2F0 0%,#2CD1ED 33%,#38E7E4 66%,#3DEFE1 100%);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.logo::before {
+    content: 'nu';
+    text-transform: uppercase;
+    font-weight: 200;
+}
+
+.logo::after {
+    content: 'arte';
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0px;
+}
+
+.logo.small {
+    font-size: 2.5em;
+}
+
+.button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: auto;
+    height: 32px;
+    padding: 20px 50px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9em;
+    border-radius: 50px;
+    transition: 200ms ease-in;
+}
+
+.button:hover,
+.button:focus {
+    outline: none;
+    -webkit-box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    -moz-box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.35);
+    transition: 200ms ease-in;
+}
+
+.button.blue,
+.button.blue:link {
+    background: -webkit-linear-gradient(0deg, #28B2F0 0%,#2CD1ED 33%,#38E7E4 66%,#3DEFE1 100%);
+    color: white;
+    text-decoration: none;
+}
+
+.button.blue:hover,
+.button.gray:hover {
+    color: white;
+}
+
+.button.gray,
+.button.gray:link {
+    background: #A2A2A2;
+    color: white;
+    text-decoration: none;
+}
+
+.link {
+    text-transform: uppercase;
+    transition: 150ms ease-in;
+}
+
+.link:focus {
+    outline: none;
+    text-decoration: underline !important;
+}
+
+.link.gray:hover,
+.link.gray:focus {
+    color: rgb(110, 110, 110);
+    transition: 150ms ease-in;
+}
+
+.link.gray,
+.link.gray:link {
+    text-decoration: none;
+    color: #A2A2A2;
+}
+
+/* COLORS */
+.blue {
+    color: #28B2F0;
+}
+
+.blue:hover {
+    color: rgb(30, 145, 199);
+}
+
+.gray {
+    color: #A2A2A2;
+}
+
+/* FONT STYLES */
+.italic {
+    font-style: italic;
+}
+
+.thin {
+    font-weight: 200;
+}
+
+.regular {
+    font-weight: 400;
+}
+
+.medium {
+    font-weight: 500;
+}
+
+.semi-bold {
+    font-weight: 600;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.extra-bold {
+    font-weight: 800;
+}
+
+.black {
+    font-weight: 900;
+}
