@@ -3,8 +3,13 @@
 include 'php/config/database.php';
 include 'php/controllers/course.php';
 
-$courses = getCourses($conn);
+session_start();
+if(isset($_SESSION['student'])) {
+    header('location: usuario');
+    exit;
+}  
 
+$courses = getCourses($conn);
 ?>
 <html>
     <head>
