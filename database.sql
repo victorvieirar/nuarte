@@ -58,7 +58,7 @@ insert into courses values
 (default, "Processos Químicos"),
 (default, "Tecnólogo de Análise e Desenvolvimento de Sistemas");
 
-insert into instruments value
+insert into instruments values
 (1, "Guitarra Strinberg", 2),
 (2, "Bateria Acústica", 1),
 (3, "Bateria Elétrica", 1),
