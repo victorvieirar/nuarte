@@ -26,11 +26,11 @@
             <span class="logo small"></span>
             <form id="login-form" action="#" method="post">
                 <div class="form-group">
-                    <input type="text" name="enrollment" id="enrollment">
+                    <input type="text" name="enrollment" id="enrollment" placeholder=" ">
                     <label for="enrollment" class="gray regular">matrícula</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" id="password">
+                    <input type="password" name="password" id="password" placeholder=" ">
                     <label for="password" class="gray regular">senha</label>
                 </div>
                 <button type="submit">entrar</button>
@@ -43,23 +43,23 @@
             <span class="logo small"></span>
             <form id="register-form" action="#" method="post">
                 <div class="form-group">
-                    <input type="text" name="enrollment" id="register_enrollment">
+                    <input type="text" name="enrollment" id="register_enrollment" placeholder=" ">
                     <label for="enrollment" class="gray regular">matrícula</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="name" id="register_name">
+                    <input type="text" name="name" id="register_name" placeholder=" ">
                     <label for="register_name" class="gray regular">nome</label>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="email" id="register_email">
+                    <input type="email" name="email" id="register_email" placeholder=" ">
                     <label for="register_email" class="gray regular">e-mail</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="course" id="register_course">
+                    <input type="text" name="course" id="register_course" placeholder=" ">
                     <label for="register_course" class="gray regular">curso</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" id="register_password">
+                    <input type="password" name="password" id="register_password" placeholder=" ">
                     <label for="register_password" class="gray regular">senha</label>
                 </div>
                 <button type="submit">criar minha conta</button>
