@@ -177,7 +177,8 @@ section.page {
     justify-content: space-between;
 }
 
-body#user {
+body#user,
+body#admin {
     display: flex;
 }
 
@@ -220,7 +221,8 @@ section.user-page .top h3::after {
 }
 
 #instruments-container,
-#reservations-container {
+#reservations-container,
+#students-container {
     margin: 35px 0 0 0;
     width: 100%;
 }
@@ -239,6 +241,31 @@ section.user-page .top h3::after {
 #reservations-container table tbody tr td:last-child {
     font-size: 0.9em;
 } 
+
+body#admin.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#admin-login {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body#admin #instruments-container table tbody tr td:last-child {
+    font-size: 0.9em;
+}
+
+body#admin .top:nth-child(3) {
+    margin: 35px 0 0 0;
+}
+
+#instruments-form {
+    width: 50%;
+}
 
 /* OBJECTS */
 .form-group {
@@ -357,7 +384,7 @@ table tbody tr:hover {
 }
 
 table tbody tr td {
-    padding: 10px;
+    padding: 10px 0;
 }
 
 
@@ -483,6 +510,10 @@ table tbody tr td {
 
 .red {
     color: #DE1B1B;
+}
+
+.red:hover {
+    color: rgb(145, 18, 18);
 }
 
 .yellow {

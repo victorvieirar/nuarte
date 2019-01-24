@@ -63,3 +63,6 @@ insert into instruments values
 (2, "Bateria Acústica", 1),
 (3, "Bateria Elétrica", 1),
 (4, "Sanfona Elétrica", 2);
+
+insert into admins values
+('nuarte', '123');

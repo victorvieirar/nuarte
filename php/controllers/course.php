@@ -9,4 +9,15 @@ function getCourses($conn) {
     return $stmt->fetchAll();
 }
 
+function getCoursesTagged($conn) {
+    $courses = getCourses($conn);
+
+    $coursesTagged = array();
+    foreach($courses as $course) {
+        $coursesTagged[$course['id']] = $course['name'];
+    }
+
+    return $coursesTagged;
+}
+
 ?>

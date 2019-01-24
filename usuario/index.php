@@ -165,7 +165,7 @@ $reservations = getStudentReservations($conn, $student);
                                 <span class="badge badge-pill badge-danger medium">atrasado</span>
                             <?php } ?>
                             </td>
-                            <td class="yellow pointer" data-studentEnrollment="<?php echo $student['enrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-reservationEnd="<?php echo $reservation['reservationEnd']; ?>"><i class="fas fa-times"></i> Cancelar</td>
+                            <td class="yellow pointer" data-studentEnrollment="<?php echo $student['enrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
                         </tr>
                     <?php
                         }

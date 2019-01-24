@@ -11,19 +11,19 @@ if(!isset($_SESSION['student']) && !isset($_SESSION['admin'])) {
 if(isset($_POST['cancel'])) {
     $studentEnrollment = isset($_POST['studentEnrollment']) ? $_POST['studentEnrollment'] : '';
     $reservationDate = isset($_POST['reservationDate']) ? $_POST['reservationDate'] : '';
-    $reservationEnd = isset($_POST['reservationEnd']) ? $_POST['reservationEnd'] : '';
+    $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : '';
 
-    if(empty($studentEnrollment) || empty($reservationDate) || empty($reservationEnd)) {
+    if(empty($studentEnrollment) || empty($reservationDate) || empty($instrument)) {
         echo json_encode(array('success' => false));
         exit;
     }
 
     $sql = "DELETE FROM reservations WHERE ";
-    $sql .= "studentEnrollment = :studentEnrollment AND reservationDate = :reservationDate AND reservationEnd = :reservationEnd";
+    $sql .= "studentEnrollment = :studentEnrollment AND reservationDate = :reservationDate AND instrument = :instrument";
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(":studentEnrollment", $studentEnrollment);
     $stmt->bindValue(":reservationDate", $reservationDate);
-    $stmt->bindValue(":reservationEnd", $reservationEnd);
+    $stmt->bindValue(":instrument", $instrument);
 
     $success = $stmt->execute();
 

@@ -10,6 +10,7 @@ $(function() {
 
     $('#sidebar nav #menu li a').click(changeUserPage);
     $('#reservations-container table tbody tr td:last-child').click(cancelReservation);
+    $('body#admin #instruments-container table tbody tr td:last-child').click();
 })
 
 function navigateTo(target, parent) {
@@ -32,11 +33,11 @@ function changeUserPage() {
 }
 
 function cancelReservation() {
-    if(confirm('Tem certeza que deseja cancelar sua reserva?')) {
+    if(confirm('Tem certeza que deseja cancelar essa reserva?')) {
         var button = $(this);
         var studentEnrollment = button.attr('data-studentEnrollment');
         var reservationDate = button.attr('data-reservationDate');
-        var reservationEnd = button.attr('data-reservationEnd');
+        var instrument = button.attr('data-instrument');
 
         $.ajax({
             method: "POST",
@@ -45,13 +46,13 @@ function cancelReservation() {
                 cancel: true,
                 studentEnrollment: studentEnrollment,
                 reservationDate: reservationDate,
-                reservationEnd: reservationEnd
+                instrument: instrument
             }
         })
         .done(function(response) {
             response = $.parseJSON(response);
             if(response.success) {
-                button.parent().parent().remove();
+                button.parent().remove();
                 alert('Reservada cancelada com sucesso!');
             } else {
                 alert('Desculpe, não conseguimos cancelar sua reserva, tente novamente.');
