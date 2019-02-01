@@ -26,29 +26,32 @@ if(isset($_POST['find'])) {
     $result = $stmt->fetchAll();
 
     $today = new DateTime('now');
-    $firstReservation = new DateTime($result[0]['reservationDate']);
+    if(!empty($result)) {
+        $firstReservation = new DateTime($result[0]['reservationDate']);
 
-    $availableDays = array();    
-    while($today < $firstReservation) {
-        $availableDays[] = $today->format("j-n-Y");
-        $today = $today->modify("+1 days");
-    }
+        $availableDays = array();    
+        while($today < $firstReservation) {
+            $availableDays[] = $today->format("j-n-Y");
+            $today = $today->modify("+1 days");
+        }
+    
 
-    for($i = 0; $i < count($result)-1; $i++) {
-        $reservation = $result[$i];
-        $nextReservation = $result[$i+1];
+        for($i = 0; $i < count($result)-1; $i++) {
+            $reservation = $result[$i];
+            $nextReservation = $result[$i+1];
 
-        if(!empty($nextReservation)) {
-            $startInterval = new DateTime($reservation['reservationEnd']);
-            $endInterval = new DateTime($nextReservation['reservationDate']);
+            if(!empty($nextReservation)) {
+                $startInterval = new DateTime($reservation['reservationEnd']);
+                $endInterval = new DateTime($nextReservation['reservationDate']);
 
-            $continue = TRUE;
-            while($continue) {
-                $startInterval->modify("+1 days");
-                if($startInterval == $endInterval) {
-                    $continue = FALSE;
-                } else {
-                    $availableDays[] = $startInterval->format("j-n-Y");
+                $continue = TRUE;
+                while($continue) {
+                    $startInterval->modify("+1 days");
+                    if($startInterval == $endInterval) {
+                        $continue = FALSE;
+                    } else {
+                        $availableDays[] = $startInterval->format("j-n-Y");
+                    }
                 }
             }
         }
