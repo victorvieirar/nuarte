@@ -332,7 +332,7 @@ input:disabled~label {
     color: #A2A2A2;
 }
 
-button {
+button:not(.no-button) {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -352,8 +352,8 @@ button {
     background: -webkit-linear-gradient(0deg, #28B2F0 0%, #2CD1ED 33%, #38E7E4 66%, #3DEFE1 100%);
 }
 
-button:hover,
-button:focus {
+button:not(.no-button):hover,
+button:not(.no-button):focus {
     -webkit-box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
     -moz-box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
     box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
@@ -403,30 +403,43 @@ table tbody tr td {
 .ui-datepicker-calendar tbody tr {
     border: none;
 }
- 
+
 .ui-datepicker td,
 .ui-datepicker td:hover {
     border: none;
     background-color: transparent;
 }
 
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-button,
+html .ui-button.ui-state-disabled:hover,
+html .ui-button.ui-state-disabled:active {
     background-color: transparent;
     border: none;
 }
 
-.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight {
     background-color: #ffc500;
     border-radius: 3px;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
     border: none;
     background-color: #007fff;
     font-weight: normal;
     color: #fff;
     border-radius: 3px;
 }
+
 
 /* COMMON CLASSES */
 
@@ -463,7 +476,7 @@ table tbody tr td {
     font-size: 2.5em;
 }
 
-.button {
+.button:not(.no-button) {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -477,8 +490,8 @@ table tbody tr td {
     transition: 200ms ease-in;
 }
 
-.button:hover,
-.button:focus {
+.button:not(.no-button):hover,
+.button:not(.no-button):focus {
     outline: none;
     -webkit-box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
     -moz-box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.35);
@@ -486,20 +499,22 @@ table tbody tr td {
     transition: 200ms ease-in;
 }
 
-.button.blue,
-.button.blue:link {
+.button:not(.no-button).blue,
+.button:not(.no-button).blue:link {
     background: -webkit-linear-gradient(0deg, #28B2F0 0%, #2CD1ED 33%, #38E7E4 66%, #3DEFE1 100%);
     color: white;
     text-decoration: none;
 }
 
-.button.blue:hover,
-.button.gray:hover {
+.button:not(.no-button).blue:hover,
+.button:not(.no-button).gray:hover,
+button:not(.no-button).gray {
     color: white;
 }
 
-.button.gray,
-.button.gray:link {
+.button:not(.no-button).gray,
+.button:not(.no-button).gray:link,
+button:not(.no-button).gray {
     background: #A2A2A2;
     color: white;
     text-decoration: none;

@@ -122,7 +122,7 @@ $coursesTagged = getCoursesTagged($conn);
                     ?>
                         <tr class="medium">
                             <td><?php echo $instrument['reference']; ?></td>
-                            <td is-editable="true"><?php echo $instrument['name']; ?></td>
+                            <td><?php echo $instrument['name']; ?></td>
                             <td>
                             <?php if($reservationDate > $now || empty($instrumentReservations)) { ?>
                                 <span class="badge badge-pill badge-success medium">disponível</span>
@@ -130,7 +130,7 @@ $coursesTagged = getCoursesTagged($conn);
                                 <span class="badge badge-pill badge-danger medium">indisponível</span><span class="red small"><?php echo "até ".$reservationEnd->format("d/m/Y"); ?></span>
                             <?php } ?>
                             </td>
-                            <td class="blue pointer"><span class="fas fa-pencil-alt"></span> editar</td>
+                            <td class="blue pointer" data-reference="<?php echo $instrument['reference']; ?>" data-name="<?php echo $instrument['name']; ?>"><span class="fas fa-pencil-alt"></span> editar</td>
                         </tr>
                     <?php
                         }
@@ -221,6 +221,32 @@ $coursesTagged = getCoursesTagged($conn);
                 </table>
             </div>
         </section>
+
+        <div class="modal fade" id="editInstrument" tabindex="-1" role="dialog" aria-labelledby="editIntrumentCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editIntrumentLongTitle">Editar instrumento</h5>
+                    <button type="button" class="close no-button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="../php/operations/update-instrument.php" method="post">
+                        <input type="hidden" name="reference" id="edit-instrument-reference" placeholder=" ">    
+                        <div class="form-group">
+                            <input type="text" name="name" id="edit-instrument-name" placeholder=" ">
+                            <label for="instrument-name" class="gray regular">nome</label>
+                        </div>
+                        <button type="submit" name="add">atualizar instrumento</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="gray" data-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div>
+        </div>
 
         <?php } ?>
     </body>

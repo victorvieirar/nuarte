@@ -17,20 +17,16 @@ if(isset($_POST['add'])) {
         exit;
     }
 
-    $sql = "INSERT INTO instruments VALUES ";
-    $sql .= "(:reference, :name)";
+    $sql = "UPDATE instruments SET ";
+    $sql .= "name = :name WHERE reference = :reference";
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(":reference", $reference);
     $stmt->bindValue(":name", $name);
+    $stmt->bindValue(":reference", $reference);
 
     try {
         $success = $stmt->execute();
     } catch(PDOException $pdoe) {
         switch($pdoe->getCode()) {
-            case 23000:
-                $_SESSION['msg'] = "Você já usou essa referência de instrumento.";
-                header('location: ../../painel');
-                exit;
             default:
                 $_SESSION['msg'] = "Erro desconhecido ao tentar cadastrar instrumento. Tente novamente.";
                 header('location: ../../painel');

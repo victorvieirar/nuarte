@@ -10,63 +10,75 @@ $(function() {
 
     $('#sidebar nav #menu li a').click(changeUserPage);
     $('#reservations-container table tbody tr td:last-child').click(cancelReservation);
-    $('body#admin #instruments-container table tbody tr td:last-child').click();
+    $('body#admin #instruments-container table tbody tr td:last-child').click(openEditInstrument);
     $('#reserve #instrument').change(updateDaysDatepicker);
 })
 
+function openEditInstrument() {
+    var button = $(this);
+    var name = button.attr('data-name');
+    var reference = button.attr('data-reference');
+    $('#editInstrument').modal('show');
+    $('#edit-instrument-name').val(name);
+    $('#edit-instrument-reference').val(reference);
+}
+
 function updateDaysDatepicker() {
     var instrument = $('#reserve #instrument').val();
-    
+
     $.ajax({
-        method: "POST",
-        url: "../php/ajax/find-available.php",
-        data: {
-            find: true,
-            instrument: instrument
-        }
-    })
-    .done(function(response) {
-        response = $.parseJSON(response);
-        if (response.success) {
-            setupAvailableDays(response.availableDays);
-        } else {
-            alert("Erro ao procurar reservas");
-        }
-    })
-    .fail(function(jqXHR, textStatus, msg) {
-        alert(msg);
-    });
+            method: "POST",
+            url: "../php/ajax/find-available.php",
+            data: {
+                find: true,
+                instrument: instrument
+            }
+        })
+        .done(function(response) {
+            response = $.parseJSON(response);
+            if (response.success) {
+                setupAvailableDays(response.availableDays);
+            } else {
+                alert("Erro ao procurar reservas");
+            }
+        })
+        .fail(function(jqXHR, textStatus, msg) {
+            alert(msg);
+        });
 }
 
 function setupAvailableDays(availableDays) {
     enableDays = availableDays;
 
     $.datepicker.regional['pt-BR'] = {
-                closeText: 'Fechar',
-                prevText: '&#x3c;Anterior',
-                nextText: 'Pr&oacute;ximo&#x3e;',
-                currentText: 'Hoje',
-                monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho',
-                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun',
-                'Jul','Ago','Set','Out','Nov','Dez'],
-                dayNames: ['Domingo','Segunda-feira','Ter&ccedil;a-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabado'],
-                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
-                dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
-                weekHeader: 'Sm',
-                dateFormat: 'dd/mm/yy',
-                firstDay: 0,
-                isRTL: false,
-                showMonthAfterYear: false,
-                yearSuffix: ''};
-        $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+        closeText: 'Fechar',
+        prevText: '&#x3c;Anterior',
+        nextText: 'Pr&oacute;ximo&#x3e;',
+        currentText: 'Hoje',
+        monthNames: ['Janeiro', 'Fevereiro', 'Mar&ccedil;o', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ],
+        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+        ],
+        dayNames: ['Domingo', 'Segunda-feira', 'Ter&ccedil;a-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'],
+        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        dayNamesMin: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+    $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 
-    $('#reservationDate').datepicker({dateFormat: 'dd-mm-yy', beforeShowDay: enableAllTheseDays}).datepicker("refresh");
+    $('#reservationDate').datepicker({ dateFormat: 'dd-mm-yy', beforeShowDay: enableAllTheseDays }).datepicker("refresh");
 }
 
 function enableAllTheseDays(date) {
-    var sdate = $.datepicker.formatDate( 'd-m-yy', date)
-    if($.inArray(sdate, enableDays) != -1) {
+    var sdate = $.datepicker.formatDate('d-m-yy', date)
+    if ($.inArray(sdate, enableDays) != -1) {
         console.log(sdate)
         return [true];
     }
