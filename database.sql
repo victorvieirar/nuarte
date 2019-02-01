@@ -13,8 +13,7 @@ use nuarte;
 create table instruments
 (
 	reference int not null primary key,
-    name varchar(255) not null,
-    quantity int not null
+    name varchar(255) not null
 );
 
 create table courses
@@ -59,10 +58,10 @@ insert into courses values
 (default, "Tecnólogo de Análise e Desenvolvimento de Sistemas");
 
 insert into instruments values
-(1, "Guitarra Strinberg", 2),
-(2, "Bateria Acústica", 1),
-(3, "Bateria Elétrica", 1),
-(4, "Sanfona Elétrica", 2);
+(1, "Guitarra Strinberg"),
+(2, "Bateria Acústica"),
+(3, "Bateria Elétrica"),
+(4, "Sanfona Elétrica");
 
 insert into admins values
 ('nuarte', '123');

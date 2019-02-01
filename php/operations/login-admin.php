@@ -13,7 +13,7 @@ if(isset($_POST['login'])) {
         exit;
     }
 
-    $sql = "SELECT * FROM admins WHERE user = '$user' AND password = $password";
+    $sql = "SELECT * FROM admins WHERE user = '$user' AND password = '$password'";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
