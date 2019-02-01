@@ -9,8 +9,26 @@ function getReservations($conn) {
     return $stmt->fetchAll();
 }
 
-function getInstrumentReservations($conn, $instrument) {
+function getCountInstrumentReservations($conn, $instrument) {
     $sql = "SELECT count(*) as 'reserves' FROM reservations WHERE instrument = ".$instrument['reference'];
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    return $stmt->fetch();
+}
+
+function getInstrumentReservations($conn, $instrument) {
+    $sql = "SELECT * FROM reservations WHERE instrument = ".$instrument['reference'];
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    return $stmt->fetch();
+}
+
+function getFirstInstrumentReservation($conn, $instrument) {
+    $sql = "SELECT * FROM reservations WHERE instrument = ".$instrument['reference'];
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $stmt->setFetchMode(PDO::FETCH_ASSOC);

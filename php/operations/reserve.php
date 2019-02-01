@@ -1,6 +1,7 @@
 <?php 
 
 require_once '../config/database.php';
+require_once '../controllers/reservation.php';
 
 $DAYS_OFFSET = 10;
 
@@ -14,6 +15,9 @@ if(isset($_POST['reserve'])) {
     $reservationDate = isset($_POST['reservationDate']) ? $_POST['reservationDate'] : '';
     $studentEnrollment = isset($_POST['studentEnrollment']) ? $_POST['studentEnrollment'] : '';
 
+    $reservationDate = DateTime::createFromFormat('d-m-Y', $reservationDate);
+    $reservationDate = $reservationDate->format("Y-m-d");
+
     if(empty($instrument) || empty($reservationDate) || empty($studentEnrollment)) {
         $_SESSION['msg'] = "Dados não preenchidos corretamente";
         header('location: ../../usuario');
@@ -22,6 +26,26 @@ if(isset($_POST['reserve'])) {
 
     $reservationDateDT = new DateTime($reservationDate);
     $reservationEnd = $reservationDateDT->modify("+".$DAYS_OFFSET." days");
+
+    $conflict = FALSE;
+    $conflictStart = NULL;
+
+    $reservations = getInstrumentReservations($conn, array('reference' => $instrument));
+    foreach($reservations as $reservation) {
+        if($reservation['reservationDate'] <= $reservationEnd) {
+            $conflict = TRUE;
+            $conflictStart = $reservation['reservationDate'];
+        }
+    }
+
+    if($conflict) {
+        $start = new DateTime($reservationDate);
+        $end = new DateTime($conflictStart);
+        $end = $end->modify('-1 days');
+        $interval = $start->diff($end);
+        $offset = $interval->format('%R%a days');
+        $reservationEnd = $start->modify(offset);
+    }
 
     $sql = "INSERT INTO reservations VALUES ";
     $sql .= "(:reservationDate, :reservationEnd, :instrument, :studentEnrollment)";

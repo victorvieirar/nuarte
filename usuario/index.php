@@ -17,6 +17,15 @@ $student = $_SESSION['student'];
 $courses = getCourses($conn);
 $instruments = getInstruments($conn);
 $reservations = getStudentReservations($conn, $student);
+
+$instrumentsAvailable = $instruments;
+foreach($instrumentsAvailable as $index => $instrument) {
+    foreach($reservations as $reservation) {
+        if($reservation['instrument'] == $instrument['reference']) {
+            unset($instrumentsAvailable[$index]);
+        }
+    }
+}
 ?>
 
 <html>
@@ -29,6 +38,7 @@ $reservations = getStudentReservations($conn, $student);
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="../css/jquery-ui.min.css">
         <link type="text/css" rel="stylesheet" href="../css/styles.css">
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
     </head>
@@ -54,9 +64,10 @@ $reservations = getStudentReservations($conn, $student);
                 <h3 class="bold gray uppercase">Meu perfil</h3>
             </div>
             <div id="profile-form">
-                <form action="php/operations/update-user.php" method="post">
+                <form action="../php/operations/update-user.php" method="post">
+                    <input type="hidden" name="enrollment" id="update_enrollment" value="<?php echo $student['enrollment']; ?>">
                     <div class="form-group">
-                        <input type="text" name="enrollment" id="update_enrollment" value="<?php echo $student['enrollment']; ?>" placeholder=" ">
+                        <input type="text" value="<?php echo $student['enrollment']; ?>" placeholder=" " disabled>
                         <label for="update_enrollment" class="gray regular">matrícula</label>
                     </div>
                     <div class="form-group">
@@ -71,8 +82,10 @@ $reservations = getStudentReservations($conn, $student);
                         <select name="course" id="course">
                             <?php
                             foreach($courses as $course) {
+                                echo $course['id'];
+                                echo $student['course'];
                             ?>
-                            <option value="<?php echo $course['id']; ?>" <?php echo $course['id'] == $student['course'] ? 'selected' : ''; ?>><?php echo $course['name']; ?></option>
+                            <option value="<?php echo $course['id']; ?>" <?php if($course['id'] == $student['course']) echo 'selected'; ?>><?php echo $course['name']; ?></option>
                             <?php
                             }                        
                             ?>
@@ -97,25 +110,30 @@ $reservations = getStudentReservations($conn, $student);
                         <tr class="bold gray">
                             <td>Código</td>
                             <td>Instrumento</td>
-                            <td>Qntd</td>
                             <td>Disponibilidade</td>
                         </tr>
                     </thead>
                     <tbody>
                     <?php
                         foreach($instruments as $instrument) {
-                            $instrumentReservations = getInstrumentReservations($conn, $instrument);
-                            $left = $instrument['quantity'] - $instrumentReservations['reserves'];
+                            $instrumentReservations = getFirstInstrumentReservation($conn, $instrument);
+                            $reservationDate = null;
+                            $reservationEnd = null;
+                            $now = new DateTime("now");
+
+                            if(!empty($instrumentReservations)) {
+                                $reservationDate = new DateTime($instrumentReservations['reservationDate']);
+                                $reservationEnd = new DateTime($instrumentReservations['reservationEnd']);
+                            }
                     ?>
                         <tr class="medium">
                             <td><?php echo $instrument['reference']; ?></td>
                             <td><?php echo $instrument['name']; ?></td>
-                            <td><?php echo $instrument['quantity']; ?></td>
                             <td>
-                            <?php if($left > 0) { ?>
-                                <span class="badge badge-pill badge-success medium">disponível</span> <?php echo $left; ?>
+                            <?php if($reservationDate > $now || empty($instrumentReservations)) { ?>
+                                <span class="badge badge-pill badge-success medium">disponível</span>
                             <?php } else { ?>
-                                <span class="badge badge-pill badge-danger medium">indisponível</span>
+                                <span class="badge badge-pill badge-danger medium">indisponível</span><span class="red small"><?php echo "até ".$reservationEnd->format("d/m/Y"); ?></span>
                             <?php } ?>
                             </td>
                         </tr>
@@ -185,20 +203,17 @@ $reservations = getStudentReservations($conn, $student);
                         <select name="instrument" id="instrument">
                             <option value="" disabled selected>Instrumento</option>
                             <?php
-                            foreach($instruments as $instrument) {
+                            foreach($instrumentsAvailable as $instrument) {
                                 $instrumentReservations = getInstrumentReservations($conn, $instrument);
-                                $left = $instrument['quantity'] - $instrumentReservations['reserves'];
-                                if($left > 0) {
                             ?>
                             <option value="<?php echo $instrument['reference']; ?>"><?php echo $instrument['name']; ?></option>
                             <?php
-                                }
                             }                        
                             ?>
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="date" name="reservationDate" id="reservationDate" value="<?php echo date("Y-m-d"); ?>" min="<?php echo date("Y-m-d"); ?>" placeholder=" ">
+                        <input type="text" name="reservationDate" id="reservationDate" min="<?php echo date("Y-m-d"); ?>" placeholder=" " autocomplete="off">
                         <label for="reservationDate" class="gray regular">data</label>
                     </div>
                     <input type="hidden" name="studentEnrollment" value="<?php echo $student['enrollment']; ?>">
@@ -211,5 +226,6 @@ $reservations = getStudentReservations($conn, $student);
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="../js/jquery-ui.min.js"></script>
     <script src="../js/functions.js"></script>
 </html>

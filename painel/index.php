@@ -28,7 +28,7 @@ $coursesTagged = getCoursesTagged($conn);
         <link type="text/css" rel="stylesheet" href="../css/styles.css">
 		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
     </head>
-    <body id="admin" <?php if(!isset($_SESSION['admin'])) echo 'class="login"'; ?>">
+    <body id="admin" <?php if(!isset($_SESSION['admin'])) echo 'class="login"'; ?>>
         <?php if(!isset($_SESSION['admin'])) { session_destroy(); ?>
         <section id="admin-login">
             <span class="logo small"></span>
@@ -90,11 +90,6 @@ $coursesTagged = getCoursesTagged($conn);
                         <input type="text" name="name" id="instrument-name" placeholder=" ">
                         <label for="instrument-name" class="gray regular">nome</label>
                     </div>
-                    <div class="form-group">
-                        <input type="number" name="quantity" id="instrument-quantity" placeholder=" ">
-                        <label for="instrument-quantity" class="gray regular">quantidade</label>
-                    </div>
-                    <input type="hidden" name="studentEnrollment" value="<?php echo $student['enrollment']; ?>">
                     <button type="submit" name="add">adicionar instrumento</button>
                 </form>
             </div>
@@ -107,7 +102,6 @@ $coursesTagged = getCoursesTagged($conn);
                         <tr class="bold gray">
                             <td>Código</td>
                             <td>Instrumento</td>
-                            <td>Qntd</td>
                             <td>Disponibilidade</td>
                             <td>Ações</td>
                         </tr>
@@ -116,17 +110,24 @@ $coursesTagged = getCoursesTagged($conn);
                     <?php
                         foreach($instruments as $instrument) {
                             $instrumentReservations = getInstrumentReservations($conn, $instrument);
-                            $left = $instrument['quantity'] - $instrumentReservations['reserves'];
+                            
+                            $reservationDate = null;
+                            $reservationEnd = null;
+                            $now = new DateTime("now");
+
+                            if(!empty($instrumentReservations)) {
+                                $reservationDate = new DateTime($instrumentReservations['reservationDate']);
+                                $reservationEnd = new DateTime($instrumentReservations['reservationEnd']);
+                            }
                     ?>
                         <tr class="medium">
                             <td><?php echo $instrument['reference']; ?></td>
                             <td is-editable="true"><?php echo $instrument['name']; ?></td>
-                            <td is-editable="true"><?php echo $instrument['quantity']; ?></td>
                             <td>
-                            <?php if($left > 0) { ?>
-                                <span class="badge badge-pill badge-success medium">disponível</span> <?php echo $left; ?>
+                            <?php if($reservationDate > $now || empty($instrumentReservations)) { ?>
+                                <span class="badge badge-pill badge-success medium">disponível</span>
                             <?php } else { ?>
-                                <span class="badge badge-pill badge-danger medium">indisponível</span>
+                                <span class="badge badge-pill badge-danger medium">indisponível</span><span class="red small"><?php echo "até ".$reservationEnd->format("d/m/Y"); ?></span>
                             <?php } ?>
                             </td>
                             <td class="blue pointer"><span class="fas fa-pencil-alt"></span> editar</td>
@@ -179,7 +180,7 @@ $coursesTagged = getCoursesTagged($conn);
                                 <span class="badge badge-pill badge-danger medium">atrasado</span>
                             <?php } ?>
                             </td>
-                            <td class="yellow pointer" data-studentEnrollment="<?php echo $student['enrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
+                            <td class="yellow pointer" data-studentEnrollment="<?php echo $reservation['studentEnrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
                         </tr>
                     <?php
                         }

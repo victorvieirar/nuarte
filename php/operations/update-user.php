@@ -21,17 +21,17 @@ if(isset($_POST['update'])) {
     }
 
     $sql = "UPDATE students SET ";
-    $sql .= "enrollment = :enrollment, name = :name, email = :email, course = :course, password = :password";
+    $sql .= "name = :name, email = :email, course = :course, password = :password WHERE enrollment = :enrollment";
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(":enrollment", $enrollment);
     $stmt->bindValue(":name", $name);
     $stmt->bindValue(":email", $email);
     $stmt->bindValue(":course", $course);
     $stmt->bindValue(":password", $password);
+    $stmt->bindValue(":enrollment", $enrollment);
     $success = $stmt->execute();
 
     if($success) {
-        $student = array('enrollment' => $enrollment, 'name' => $name, 'email' => $email, 'course' => $couse, 'password' => $password); 
+        $student = array('enrollment' => $enrollment, 'name' => $name, 'email' => $email, 'course' => $course, 'password' => $password); 
         $_SESSION['student'] = $student;
         $_SESSION['msg'] = "Dados atualizados com sucesso.";
         header('location: ../../usuario');
