@@ -29,6 +29,7 @@ create table students
     email varchar(255) not null,
     course int not null,
     password varchar(255) not null,
+    block int not null default '0',
     primary key (enrollment),
     foreign key (course) references courses(id)
 );
@@ -37,8 +38,10 @@ create table reservations
 (
 	reservationDate date not null,
     reservationEnd date not null,
+    backDate date null default null,
     instrument int not null,
     studentEnrollment varchar(30) not null,
+    status int not null default '0',
     primary key (reservationDate, instrument, studentEnrollment),
     foreign key (instrument) references instruments(reference),
     foreign key (studentEnrollment) references students(enrollment)
@@ -65,3 +68,14 @@ insert into instruments values
 
 insert into admins values
 ('nuarte', '123');
+
+DELIMITER $ 
+CREATE EVENT checkAll 
+    ON SCHEDULE EVERY 1 DAY
+    STARTS 'DATA-DE-HOJE-YYYY-MM-DD 23:59' --precisa ser no futuro
+    DO BEGIN 
+        update students set block = block + 1 WHERE enrollment in (select studentEnrollment from reservations where reservationEnd < CURRENT_DATE()); --adiciona block aos atrasado
+        update reservations set status = 2 where studentEnrollment in (select studentEnrollment from reservations where reservationEnd < CURRENT_DATE()); --nega os pedidos futuros dos atrasados
+        update students set block = block - 1 where block > 0 and enrollment not in (select studentEnrollment from reservations where reservationEnd < CURRENT_DATE()); --retira um dia de punição dos atrasados que devolveram
+    END
+$ DELIMITER ;

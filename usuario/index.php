@@ -153,9 +153,11 @@ foreach($instrumentsAvailable as $index => $instrument) {
                 <table class="uppercase">
                     <thead>
                         <tr class="bold gray">
-                            <td>Cód. do Inst.</td>
+                            <td>Cód.</td>
                             <td>Data da reserva</td>
                             <td>Data de entrega</td>
+                            <td>Data de devolução</td>
+                            <td>Prazo</td>
                             <td>Status</td>
                             <td>Ações</td>
                         </tr>
@@ -165,9 +167,45 @@ foreach($instrumentsAvailable as $index => $instrument) {
                         foreach($reservations as $reservation) {                          
                             $startTime = new DateTime($reservation['reservationDate']);
                             $endTime = new DateTime($reservation['reservationEnd']);
+                            $backTime = null;
+                            if($reservation['backDate'] != null) $backTime = new DateTime($reservation['backDate']);
                             $nowTime = new DateTime();
 
-                            $status = $nowTime > $endTime ? 0 : 1;
+                            $status = $reservation['status'];
+                            $statusText = '';
+                            $statusClass = '';
+                            switch($status) {
+                                case 0:
+                                $statusText = 'pendente';
+                                $statusClass = 'warning';
+                                break;
+                                
+                                case 1:
+                                $statusText = 'confirmado';
+                                $statusClass = 'success';
+                                break;
+                                
+                                case 2: 
+                                $statusText = 'negado';
+                                $statusClass = 'danger';
+                                break;
+
+                                case 3:
+                                $statusText = 'devolvido';
+                                $statusClass = 'success';
+                            }
+
+                            $canCancel = TRUE;
+                            if($status > 0) {
+                                $canCancel = FALSE;
+                            }
+
+                            if($status == 3 && $backTime != null) {
+                                $term = $backTime > $endTime ? 0 : 1;
+                                $backTime = $backTime->format('d/m/Y');
+                            } else {
+                                $term = $nowTime > $endTime ? 0 : 1;
+                            }
                             
                             $startTime = $startTime->format('d/m/Y');
                             $endTime = $endTime->format('d/m/Y');
@@ -176,14 +214,17 @@ foreach($instrumentsAvailable as $index => $instrument) {
                             <td><?php echo $reservation['instrument']; ?></td>
                             <td><?php echo $startTime; ?></td>
                             <td><?php echo $endTime; ?></td>
+                            <td><?php if($reservation['backDate'] != null) echo $backTime; else echo "-"; ?></td>
                             <td>
-                            <?php if($status) { ?>
+                            <?php if($term) { ?>
                                 <span class="badge badge-pill badge-success medium">no prazo</span>
                             <?php } else { ?>
                                 <span class="badge badge-pill badge-danger medium">atrasado</span>
                             <?php } ?>
                             </td>
-                            <td class="yellow pointer" data-studentEnrollment="<?php echo $student['enrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
+                            <td><span id="status" class="badge badge-pill badge-<?php echo $statusClass; ?> medium"><?php echo $statusText; ?></span></td>
+                            <?php if($canCancel) { ?><td class="yellow pointer" data-studentEnrollment="<?php echo $student['enrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
+                            <?php } else { ?><td class="gray not-allowed"><i class="fas fa-ban"></i></td><?php } ?>
                         </tr>
                     <?php
                         }
@@ -197,8 +238,16 @@ foreach($instrumentsAvailable as $index => $instrument) {
             <div class="top">
                 <h3 class="bold gray uppercase">Realizar reserva</h3>
             </div>
+            <?php if($student['block'] > 0) { ?>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Ops!</strong> Você possui uma punição por itens atrasados e, por isso, está impedido de fazer reservas por <?php echo $student['block']; ?> dia(s). Regularize sua situação e tente novamente.
+                    <button type="button" class="close no-button" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <?php } ?>
             <div id="reserve-form">
-                <form action="../php/operations/reserve.php" method="post">
+            <form action="<?php if($student['block'] == 0) { ?>../php/operations/reserve.php<?php } ?>" method="post" class="<?php if($student['block'] > 0) echo 'disabled'; ?>">
                     <div class="form-group">
                         <select name="instrument" id="instrument">
                             <option value="" disabled selected>Instrumento</option>

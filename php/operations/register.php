@@ -17,7 +17,7 @@ if(isset($_POST['register'])) {
     }
 
     $sql = "INSERT INTO students VALUES ";
-    $sql .= "(:enrollment, :name, :email, :course, :password)";
+    $sql .= "(:enrollment, :name, :email, :course, :password, default)";
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(":enrollment", $enrollment);
     $stmt->bindValue(":name", $name);

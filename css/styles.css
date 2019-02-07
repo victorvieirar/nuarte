@@ -276,6 +276,10 @@ body#admin .top:nth-child(3) {
     margin: -5px 0;
 }
 
+form.disabled {
+    opacity: 0.5;
+}
+
 input:placeholder-shown~label {
     top: 35;
 }
@@ -548,6 +552,10 @@ button:not(.no-button).gray {
 
 .pointer {
     cursor: pointer;
+}
+
+.not-allowed {
+    cursor: not-allowed;
 }
 
 

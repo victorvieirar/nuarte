@@ -44,11 +44,11 @@ if(isset($_POST['reserve'])) {
         $end = $end->modify('-1 days');
         $interval = $start->diff($end);
         $offset = $interval->format('%R%a days');
-        $reservationEnd = $start->modify(offset);
+        $reservationEnd = $start->modify($offset);
     }
 
     $sql = "INSERT INTO reservations VALUES ";
-    $sql .= "(:reservationDate, :reservationEnd, :instrument, :studentEnrollment)";
+    $sql .= "(:reservationDate, :reservationEnd, default, :instrument, :studentEnrollment, default)";
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(":reservationDate", $reservationDate);
     $stmt->bindValue(":reservationEnd", $reservationEnd->format('Y-m-d H:i:s'));

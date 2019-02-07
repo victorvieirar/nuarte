@@ -19,12 +19,12 @@ function getCountInstrumentReservations($conn, $instrument) {
 }
 
 function getInstrumentReservations($conn, $instrument) {
-    $sql = "SELECT * FROM reservations WHERE instrument = ".$instrument['reference'];
+    $sql = "SELECT * FROM reservations WHERE instrument = ".$instrument['reference']." AND status = 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-    return $stmt->fetch();
+    return $stmt->fetchAll();
 }
 
 function getFirstInstrumentReservation($conn, $instrument) {

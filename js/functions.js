@@ -9,9 +9,14 @@ $(function() {
     });
 
     $('#sidebar nav #menu li a').click(changeUserPage);
-    $('#reservations-container table tbody tr td:last-child').click(cancelReservation);
+    $('#reservations-container table.admin tbody tr td:last-child .fa-times').click(cancelReservation);
+    $('#reservations-container table.admin tbody tr td:last-child .fa-check').click(confirmReservation);
+    $('#reservations-container table.admin tbody tr td:last-child .fa-undo').click(backReservation);
+    $('#reservations-container table:not(.admin) tbody tr td:not(.not-allowed):last-child').click(deleteReservation);
     $('body#admin #instruments-container table tbody tr td:last-child').click(openEditInstrument);
     $('#reserve #instrument').change(updateDaysDatepicker);
+
+    $('form.disabled *').attr('disabled', true);
 })
 
 function openEditInstrument() {
@@ -105,6 +110,38 @@ function changeUserPage() {
 }
 
 function cancelReservation() {
+    if (confirm('Tem certeza que deseja negar essa reserva?')) {
+        var button = $(this).parent();
+        var studentEnrollment = button.attr('data-studentEnrollment');
+        var reservationDate = button.attr('data-reservationDate');
+        var instrument = button.attr('data-instrument');
+
+        $.ajax({
+                method: "POST",
+                url: "../php/ajax/reservation.php",
+                data: {
+                    cancel: true,
+                    studentEnrollment: studentEnrollment,
+                    reservationDate: reservationDate,
+                    instrument: instrument
+                }
+            })
+            .done(function(response) {
+                response = $.parseJSON(response);
+                if (response.success) {
+                    button.parent().find('#status').text('negado').removeClass('badge-warning badge-success').addClass('badge-danger');
+                    alert('Reservada negada com sucesso!');
+                } else {
+                    alert('Desculpe, não conseguimos negar sua reserva, tente novamente.');
+                }
+            })
+            .fail(function(jqXHR, textStatus, msg) {
+                alert(msg);
+            });
+    }
+}
+
+function deleteReservation() {
     if (confirm('Tem certeza que deseja cancelar essa reserva?')) {
         var button = $(this);
         var studentEnrollment = button.attr('data-studentEnrollment');
@@ -113,9 +150,9 @@ function cancelReservation() {
 
         $.ajax({
                 method: "POST",
-                url: "../php/ajax/cancel-reservation.php",
+                url: "../php/ajax/reservation.php",
                 data: {
-                    cancel: true,
+                    delete: true,
                     studentEnrollment: studentEnrollment,
                     reservationDate: reservationDate,
                     instrument: instrument
@@ -128,6 +165,71 @@ function cancelReservation() {
                     alert('Reservada cancelada com sucesso!');
                 } else {
                     alert('Desculpe, não conseguimos cancelar sua reserva, tente novamente.');
+                }
+            })
+            .fail(function(jqXHR, textStatus, msg) {
+                alert(msg);
+            });
+    }
+}
+
+function confirmReservation() {
+    if (confirm('Tem certeza que deseja confirmar essa reserva?')) {
+        var button = $(this).parent();
+        var studentEnrollment = button.attr('data-studentEnrollment');
+        var reservationDate = button.attr('data-reservationDate');
+        var instrument = button.attr('data-instrument');
+
+        $.ajax({
+                method: "POST",
+                url: "../php/ajax/reservation.php",
+                data: {
+                    confirm: true,
+                    studentEnrollment: studentEnrollment,
+                    reservationDate: reservationDate,
+                    instrument: instrument
+                }
+            })
+            .done(function(response) {
+                response = $.parseJSON(response);
+                if (response.success) {
+                    button.parent().find('#status').text('confirmado').removeClass('badge-warning badge-danger').addClass('badge-success');
+                    alert('Reservada confirmada com sucesso!');
+                } else {
+                    alert('Desculpe, não conseguimos confirmar sua reserva, tente novamente.');
+                }
+            })
+            .fail(function(jqXHR, textStatus, msg) {
+                alert(msg);
+            });
+    }
+}
+
+function backReservation() {
+    if (confirm('Tem certeza que deseja confirmar a devolução do item?')) {
+        var button = $(this).parent();
+        var studentEnrollment = button.attr('data-studentEnrollment');
+        var reservationDate = button.attr('data-reservationDate');
+        var instrument = button.attr('data-instrument');
+
+        $.ajax({
+                method: "POST",
+                url: "../php/ajax/reservation.php",
+                data: {
+                    back: true,
+                    studentEnrollment: studentEnrollment,
+                    reservationDate: reservationDate,
+                    instrument: instrument
+                }
+            })
+            .done(function(response) {
+                response = $.parseJSON(response);
+                if (response.success) {
+                    button.parent().find('#status').text('devolvido').removeClass('badge-warning badge-danger').addClass('badge-success');
+                    button.parent().find('#back').text(response.date);
+                    alert('Reservada confirmada com sucesso!');
+                } else {
+                    alert('Desculpe, não conseguimos confirmar sua reserva, tente novamente.');
                 }
             })
             .fail(function(jqXHR, textStatus, msg) {

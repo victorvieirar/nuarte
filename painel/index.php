@@ -116,6 +116,7 @@ $coursesTagged = getCoursesTagged($conn);
                             $now = new DateTime("now");
 
                             if(!empty($instrumentReservations)) {
+                                $instrumentReservations = $instrumentReservations[0];
                                 $reservationDate = new DateTime($instrumentReservations['reservationDate']);
                                 $reservationEnd = new DateTime($instrumentReservations['reservationEnd']);
                             }
@@ -145,13 +146,15 @@ $coursesTagged = getCoursesTagged($conn);
                 <h3 class="bold gray uppercase">Reservas</h3>
             </div>
             <div id="reservations-container">
-                <table class="uppercase">
+                <table class="uppercase admin">
                     <thead>
                         <tr class="bold gray">
                             <td>Cód.</td>
                             <td>Matrícula</td>
                             <td>Data da reserva</td>
                             <td>Data de entrega</td>
+                            <td>Data de devolução</td>
+                            <td>Prazo</td>
                             <td>Status</td>
                             <td>Ações</td>
                         </tr>
@@ -161,9 +164,40 @@ $coursesTagged = getCoursesTagged($conn);
                         foreach($reservations as $reservation) {                          
                             $startTime = new DateTime($reservation['reservationDate']);
                             $endTime = new DateTime($reservation['reservationEnd']);
+                            $backTime = null;
+                            if($reservation['backDate'] != null) $backTime = new DateTime($reservation['backDate']);
                             $nowTime = new DateTime();
 
-                            $status = $nowTime > $endTime ? 0 : 1;
+                            $status = $reservation['status'];
+                            $statusText = '';
+                            $statusClass = '';
+                            switch($status) {
+                                case 0:
+                                $statusText = 'pendente';
+                                $statusClass = 'warning';
+                                break;
+                                
+                                case 1:
+                                $statusText = 'confirmado';
+                                $statusClass = 'success';
+                                break;
+                                
+                                case 2: 
+                                $statusText = 'negado';
+                                $statusClass = 'danger';
+                                break;
+
+                                case 3:
+                                $statusText = 'devolvido';
+                                $statusClass = 'success';
+                            }
+
+                            if($status == 3 && $backTime != null) {
+                                $term = $backTime > $endTime ? 0 : 1;
+                                $backTime = $backTime->format('d/m/Y');
+                            } else {
+                                $term = $nowTime > $endTime ? 0 : 1;
+                            }
                             
                             $startTime = $startTime->format('d/m/Y');
                             $endTime = $endTime->format('d/m/Y');
@@ -173,14 +207,16 @@ $coursesTagged = getCoursesTagged($conn);
                             <td><?php echo $reservation['studentEnrollment']; ?></td>
                             <td><?php echo $startTime; ?></td>
                             <td><?php echo $endTime; ?></td>
+                            <td id="back"><?php if($reservation['backDate'] != null) echo $backTime; else echo "-"; ?></td>
                             <td>
-                            <?php if($status) { ?>
+                            <?php if($term) { ?>
                                 <span class="badge badge-pill badge-success medium">no prazo</span>
                             <?php } else { ?>
                                 <span class="badge badge-pill badge-danger medium">atrasado</span>
                             <?php } ?>
                             </td>
-                            <td class="yellow pointer" data-studentEnrollment="<?php echo $reservation['studentEnrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas fa-times"></i> Cancelar</td>
+                            <td><span id="status" class="badge badge-pill badge-<?php echo $statusClass; ?> medium"><?php echo $statusText; ?></span></td>
+                            <td class="pointer" data-studentEnrollment="<?php echo $reservation['studentEnrollment']; ?>" data-reservationDate="<?php echo $reservation['reservationDate']; ?>" data-instrument="<?php echo $reservation['instrument']; ?>"><i class="fas red fa-times"></i> <i class="fas blue fa-check"></i> <i class="fas blue fa-undo"></i></td>
                         </tr>
                     <?php
                         }
